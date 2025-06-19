@@ -1,0 +1,5 @@
+Basic Install | uvicorn and fastapi
+Vercel setup - add vercel.json and install the latest CLI version
+It's also required installing NodeJs to run some commands, such as:
+> npm i -g vercel
+> vercel .

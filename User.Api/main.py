@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 
-teste = FastAPI()
+app = FastAPI()
 
-@teste.get("/")
+@app.get("/")
 def home():
     return "API ON"
+
+@app.get("/teste")
+def teste():
+    return "API ON - TESTE"
