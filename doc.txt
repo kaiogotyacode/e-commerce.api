@@ -3,3 +3,5 @@ Vercel setup - add vercel.json and install the latest CLI version
 It's also required installing NodeJs to run some commands, such as:
 > npm i -g vercel
 > vercel .
+
+pip install fastapi uvicorn asyncpg pydantic
