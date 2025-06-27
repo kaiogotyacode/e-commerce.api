@@ -1,4 +1,4 @@
-from domain.dto.usuario.request import NovoUsuarioRequest
+from domain.dto.usuario.request.novo_usuario_request import NovoUsuarioRequest
 from domain.models.usuario.usuario_model import UsuarioModel
 from infrastructure.dao.postgres.usuario.usuario_dao import UsuarioDAO
 
