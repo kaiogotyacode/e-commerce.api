@@ -44,11 +44,19 @@ class BaseDAO(ABC):
         """Converte um dicionário para o modelo"""
         return self.model_class(**data)
     
-    async def criar(self, model: Any) -> None:
+    async def criar(self, model: Any, usuario_id: int = None) -> None:
         """Insere um novo registro na tabela"""
         conn = await self._get_connection()
         try:
+            # Prepara o modelo para inclusão se tiver o método
+            if hasattr(model, 'preparar_para_inclusao') and usuario_id:
+                model.preparar_para_inclusao(usuario_id)
+            
             model_dict = self._model_to_dict(model)
+            # Remove o campo ID se for None (para auto-increment)
+            if 'id' in model_dict and model_dict['id'] is None:
+                del model_dict['id']
+            
             fields_names = list(model_dict.keys())
             fields_str = ', '.join(fields_names)
             placeholders = ', '.join([f'${i+1}' for i in range(len(fields_names))])
@@ -86,10 +94,14 @@ class BaseDAO(ABC):
         finally:
             await conn.close()
     
-    async def atualizar(self, id_value: Any, model: Any) -> bool:
+    async def atualizar(self, id_value: Any, model: Any, usuario_id: int = None) -> bool:
         """Atualiza um registro existente"""
         conn = await self._get_connection()
         try:
+            # Prepara o modelo para alteração se tiver o método
+            if hasattr(model, 'preparar_para_alteracao') and usuario_id:
+                model.preparar_para_alteracao(usuario_id)
+            
             model_dict = self._model_to_dict(model)
             # Remove o campo da chave primária se existir no modelo
             if self.primary_key_field in model_dict:
@@ -145,3 +157,16 @@ class BaseDAO(ABC):
             
         finally:
             await conn.close()
+
+    def get_primary_key_value(self, primary_key_field: str) -> Optional[int]:
+        """
+        Obtém o valor da chave primária baseado no nome do campo.
+        """
+        return getattr(self, primary_key_field, None)
+    
+    def is_novo_registro(self, primary_key_field: str) -> bool:
+        """
+        Verifica se é um novo registro (sem chave primária definida).
+        """
+        pk_value = self.get_primary_key_value(primary_key_field)
+        return pk_value is None

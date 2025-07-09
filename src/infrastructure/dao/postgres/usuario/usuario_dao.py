@@ -16,9 +16,9 @@ class UsuarioDAO(BaseDAO):
     def primary_key_field(self) -> str:
         return "id_usuario"
     
-    async def criar_novo_usuario(self, model: UsuarioModel):
+    async def criar_novo_usuario(self, model: UsuarioModel, usuario_id: int = None):
         """Método específico para criar usuário"""
-        await self.criar(model)
+        await self.criar(model, usuario_id)
     
     # Métodos específicos para UsuarioDAO (além dos herdados da BaseDAO)
     async def buscar_por_email(self, email: str) -> Optional[UsuarioModel]:
