@@ -6,10 +6,10 @@ from domain.models.common.base_model import BaseModel
 @dataclass
 class UsuarioModel(BaseModel):
     id_usuario: Optional[int] = None
-    nome: str
-    email: str
-    senha: str
-    u_inclusao = UsuarioPadraoEnum.ID.value
+    nome: str = ""
+    email: str = ""
+    senha: str = ""
+
 
     def is_novo_usuario(self) -> bool:
         """Verifica se é um novo usuário"""

@@ -45,7 +45,14 @@ class BaseDAO(ABC):
         return self.model_class(**data)
     
     async def criar(self, model: Any, usuario_id: int = None) -> None:
-        """Insere um novo registro na tabela"""
+        """
+        Insere um novo registro com ID automático (SERIAL/BIGSERIAL).
+        O campo da chave primária será omitido para permitir auto-geração.
+        
+        Args:
+            model: Modelo com os dados a serem inseridos
+            usuario_id: ID do usuário para auditoria (opcional)
+        """
         conn = await self._get_connection()
         try:
             # Prepara o modelo para inclusão se tiver o método
@@ -53,9 +60,13 @@ class BaseDAO(ABC):
                 model.preparar_para_inclusao(usuario_id)
             
             model_dict = self._model_to_dict(model)
-            # Remove o campo ID se for None (para auto-increment)
-            if 'id' in model_dict and model_dict['id'] is None:
-                del model_dict['id']
+            
+            # ✅ SEMPRE remove o campo da chave primária para auto-geração
+            if self.primary_key_field in model_dict:
+                del model_dict[self.primary_key_field]
+            
+            if not model_dict:
+                raise ValueError("Nenhum campo para inserir após remoção da chave primária")
             
             fields_names = list(model_dict.keys())
             fields_str = ', '.join(fields_names)
@@ -68,6 +79,66 @@ class BaseDAO(ABC):
         finally:
             await conn.close()
     
+    async def criar_com_id(self, model: Any, usuario_id: int = None) -> None:
+        """
+        Insere um novo registro com ID manual (fornecido no modelo).
+        O campo da chave primária deve estar preenchido no modelo.
+        
+        Args:
+            model: Modelo com os dados a serem inseridos (incluindo ID)
+            usuario_id: ID do usuário para auditoria (opcional)
+            
+        Raises:
+            ValueError: Se o ID não estiver definido no modelo
+        """
+        conn = await self._get_connection()
+        try:
+            # Prepara o modelo para inclusão se tiver o método
+            if hasattr(model, 'preparar_para_inclusao') and usuario_id:
+                model.preparar_para_inclusao(usuario_id)
+            
+            model_dict = self._model_to_dict(model)
+            
+            # ✅ Verifica se o ID foi fornecido
+            pk_value = model_dict.get(self.primary_key_field)
+            if pk_value is None:
+                raise ValueError(f"Campo {self.primary_key_field} deve estar preenchido para inserção manual")
+            
+            fields_names = list(model_dict.keys())
+            fields_str = ', '.join(fields_names)
+            placeholders = ', '.join([f'${i+1}' for i in range(len(fields_names))])
+            values = [model_dict[field] for field in fields_names]
+            
+            query = f"INSERT INTO {self.table_name} ({fields_str}) VALUES ({placeholders})"
+            await conn.execute(query, *values)
+            
+        finally:
+            await conn.close()
+    
+    async def criar_ou_atualizar(self, model: Any, usuario_id: int = None) -> str:
+        """
+        Inteligente: Cria se for novo registro ou atualiza se já existir.
+        Verifica automaticamente baseado na presença da chave primária.
+        
+        Args:
+            model: Modelo com os dados
+            usuario_id: ID do usuário para auditoria (opcional)
+            
+        Returns:
+            "CRIADO" ou "ATUALIZADO"
+        """
+        model_dict = self._model_to_dict(model)
+        pk_value = model_dict.get(self.primary_key_field)
+        
+        if pk_value is None:
+            # Novo registro - usar ID automático
+            await self.criar(model, usuario_id)
+            return "CRIADO"
+        else:
+            # Registro existente - atualizar
+            await self.atualizar(pk_value, model, usuario_id)
+            return "ATUALIZADO"
+
     async def buscar_por_id(self, id_value: Any) -> Optional[Any]:
         """Busca um registro pelo ID"""
         conn = await self._get_connection()
@@ -157,16 +228,3 @@ class BaseDAO(ABC):
             
         finally:
             await conn.close()
-
-    def get_primary_key_value(self, primary_key_field: str) -> Optional[int]:
-        """
-        Obtém o valor da chave primária baseado no nome do campo.
-        """
-        return getattr(self, primary_key_field, None)
-    
-    def is_novo_registro(self, primary_key_field: str) -> bool:
-        """
-        Verifica se é um novo registro (sem chave primária definida).
-        """
-        pk_value = self.get_primary_key_value(primary_key_field)
-        return pk_value is None
