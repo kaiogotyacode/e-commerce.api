@@ -1,28 +1,22 @@
 # import uvicorn
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
-from domain.bo.usuario.usuario_bo import UsuarioBO
-from application.dto.usuario.request.novo_usuario_request import NovoUsuarioRequest
+from presentation.routers.usuario_routes import router as usuario_router
+from presentation.routers.pedido_routes import router as pedido_router
 
 # TODO: Aprender a como separar as "Tags" (Default) por Controllers, de forma individual/segregada.
 
-app = FastAPI()
+app = FastAPI(
+    title="E-commerce API",
+    description="API para gerenciamento de e-commerce",
+    version="1.0.0"
+)
 
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 def home():
-    return "API ON"
+    return RedirectResponse(url="/docs")
 
-@app.get("/teste")
-def teste():
-    return "API ON - TESTE"
-
-@app.post("/usuario/novo_usuario", response_model=None)
-async def criar_novo_usuario(request : NovoUsuarioRequest):
-    return await UsuarioBO().novo_usuario(request)
-
-# Principal
-
-    # Criar método que vai acessar Postgres e realizar CRUD simples.
-    # > Apply a BaseDAO
-    # > Seguir o padrão da Modelagem (DAO > Model) 
+app.include_router(usuario_router)
+app.include_router(pedido_router)
