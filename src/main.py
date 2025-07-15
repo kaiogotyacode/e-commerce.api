@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 
 from domain.bo.usuario.usuario_bo import UsuarioBO
-from domain.dto.usuario.request.novo_usuario_request import NovoUsuarioRequest
+from application.dto.usuario.request.novo_usuario_request import NovoUsuarioRequest
 
 # TODO: Aprender a como separar as "Tags" (Default) por Controllers, de forma individual/segregada.
 
