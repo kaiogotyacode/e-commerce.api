@@ -1,20 +1,20 @@
 from fastapi import HTTPException, status
 from presentation.controllers.base_controller import BaseController
-from domain.bo.usuario.usuario_bo import UsuarioBO
-from application.dto.usuario.request.novo_usuario_request import NovoUsuarioRequest
+from domain.bo.auth.auth_bo import AuthBO
+from application.dto.auth.request.autenticar_usuario_request import AutenticarUsuarioRequest
 
-class PedidoController(BaseController):
+class TokenController(BaseController):
         
     def __init__(self):
         super().__init__()
-        self.usuario_bo = UsuarioBO()
+        self.auth_bo = AuthBO()
     
-    async def criar_pedido(self, request: NovoUsuarioRequest):
+    async def autenticar_usuario(self, request: AutenticarUsuarioRequest):
         try:
-            resultado = await self.usuario_bo.novo_usuario(request)
+            resultado = await self.auth_bo.autenticar_usuario(request)
             return self._success_response(
                 data=resultado,
-                message="Usuário criado com sucesso"
+                message="Autenticação realizada com sucesso"
             )
         
         except ValueError as e:
@@ -25,5 +25,5 @@ class PedidoController(BaseController):
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=self._handle_error(e, "Erro ao criar usuário")
+                detail=self._handle_error(e, "Erro ao autenticar usuário")
             )

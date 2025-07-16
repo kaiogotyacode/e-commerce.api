@@ -6,7 +6,7 @@ class AuthDAO(BaseDAO):
 
     @property
     def table_name(self) -> str:
-        return "usuarios.tbl_usuario"
+        return "usuario.tbl_usuario"
     
     @property
     def model_class(self):
@@ -17,14 +17,14 @@ class AuthDAO(BaseDAO):
         return "id_usuario"
         
     async def buscar_por_email(self, email: str) -> Optional[UsuarioModel]:
-        query = """
+        query = f"""
                     SELECT  tu.id_usuario, 
                             tu.nome, 
                             tu.email, 
                             tu.senha, 
                             tu.ativo
-                    FROM usuarios.tbl_usuario tu
-                    WHERE tu.email = %s AND tu.ativo = true"""
+                    FROM usuario.tbl_usuario tu
+                    WHERE tu.email = $1 AND tu.ativo = true"""
 
         params = (email,)
         result = await self.execute_query(query, params)

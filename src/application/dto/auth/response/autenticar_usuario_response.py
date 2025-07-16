@@ -1,5 +1,6 @@
 from application.dto.base_dto import BaseDTO
 
 class AutenticarUsuarioResponse(BaseDTO):
-    mensagem: str
-    token: str = None
+    token: str
+    token_type: str
+    expires_in: int

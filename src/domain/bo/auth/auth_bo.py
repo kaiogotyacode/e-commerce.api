@@ -2,10 +2,12 @@ import bcrypt
 from application.dto.auth.request.autenticar_usuario_request import AutenticarUsuarioRequest
 from domain.models.usuario.usuario_model import UsuarioModel
 from infrastructure.dao.postgres.auth.auth_dao import AuthDAO
+from domain.bo.auth.jwt_manager import JWTManager
 
 class AuthBO:
     def __init__(self):
         self.auth_dao = AuthDAO()
+        self.jwt_manager = JWTManager()
 
     def _hash_password(self, password: str) -> str:
         """Gera hash da senha usando bcrypt"""
@@ -25,7 +27,9 @@ class AuthBO:
 
         if not self._verify_password(request.senha, usuario.senha):
             raise ValueError("Senha incorreta")
+        
+        token = self.jwt_manager.generate_token(usuario.id_usuario)
 
-        return {"mensagem" : "Usuário autenticado com sucesso!"}
+        return token
 
         # Aqui você pode adicionar a lógica para gerar um token JWT, se necessário

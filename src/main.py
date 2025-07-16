@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
 from presentation.routers.usuario_routes import router as usuario_router
-from presentation.routers.pedido_routes import router as pedido_router
+from presentation.routers.token_routes import router as token_router
 
 # TODO: Aprender a como separar as "Tags" (Default) por Controllers, de forma individual/segregada.
 
@@ -19,4 +19,4 @@ def home():
     return RedirectResponse(url="/docs")
 
 app.include_router(usuario_router)
-app.include_router(pedido_router)
+app.include_router(token_router)

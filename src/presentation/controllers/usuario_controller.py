@@ -29,17 +29,3 @@ class UsuarioController(BaseController):
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=self._handle_error(e, "Erro ao criar usuário")
             )
-        
-    async def autenticar_usuario(self, email: str, senha: str):
-        try:
-            resultado = await self.usuario_bo.autenticar_usuario(email, senha)
-            return self._success_response(
-                data=resultado,
-                message="Autenticação realizada com sucesso"
-            )
-        
-        except ValueError:
-            raise BadRequestException("Requisição inválida.")
-        
-        except Exception:
-            raise InternalServerException("Erro ao autenticar usuário.")
