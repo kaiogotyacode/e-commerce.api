@@ -9,7 +9,7 @@ class UsuarioModel(BaseModel):
     nome: str = ""
     email: str = ""
     senha: str = ""
-
+    ativo: bool = True
 
     def is_novo_usuario(self) -> bool:
         """Verifica se é um novo usuário"""

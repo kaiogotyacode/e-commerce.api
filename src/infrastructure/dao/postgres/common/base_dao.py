@@ -44,6 +44,29 @@ class BaseDAO(ABC):
         """Converte um dicionário para o modelo"""
         return self.model_class(**data)
     
+    
+    async def execute_query(self, query: str, params: tuple = None) -> list:
+        """
+        Executa uma query customizada com parâmetros
+        
+        Args:
+            query: Query SQL com placeholders $1, $2, etc.
+            params: Tupla com os parâmetros para substituir os placeholders
+            
+        Returns:
+            Lista de dicionários com os resultados
+        """
+        conn = await self._get_connection()
+        try:
+            if params:
+                result = await conn.fetch(query, *params)
+            else:
+                result = await conn.fetch(query)
+            
+            return [dict(row) for row in result] if result else []
+        finally:
+            await conn.close()
+    
     async def criar(self, model: Any, usuario_id: int = None) -> None:
         """
         Insere um novo registro com ID automático (SERIAL/BIGSERIAL).
@@ -55,13 +78,11 @@ class BaseDAO(ABC):
         """
         conn = await self._get_connection()
         try:
-            # Prepara o modelo para inclusão se tiver o método
             if hasattr(model, 'preparar_para_inclusao') and usuario_id:
                 model.preparar_para_inclusao(usuario_id)
             
             model_dict = self._model_to_dict(model)
             
-            # ✅ SEMPRE remove o campo da chave primária para auto-geração
             if self.primary_key_field in model_dict:
                 del model_dict[self.primary_key_field]
             
