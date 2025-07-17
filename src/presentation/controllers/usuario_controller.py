@@ -1,9 +1,8 @@
-from fastapi import HTTPException, status
-from domain.exceptions.bad_request_exception import BadRequestException
-from domain.exceptions.internal_server_exception import InternalServerException
+from fastapi import Depends, HTTPException, status
 from presentation.controllers.base_controller import BaseController
 from domain.bo.usuario.usuario_bo import UsuarioBO
 from application.dto.usuario.request.novo_usuario_request import NovoUsuarioRequest
+from domain.dependencies.usuario_bearer_token_dependency import validar_token_usuario
 
 class UsuarioController(BaseController):
         
@@ -31,12 +30,12 @@ class UsuarioController(BaseController):
             )
 
     # Método não faz sentido para E-commerce. Apenas para testar Bearer Token Validation
-    async def listar_usuarios(self, request: NovoUsuarioRequest):
+    async def listar_usuarios(self, token: str = Depends(validar_token_usuario)):
         try:
-            resultado = await self.usuario_bo.novo_usuario(request)
+            resultado = await self.usuario_bo.listar_usuarios()
             return self._success_response(
                 content=resultado,
-                message="Usuário criado com sucesso"
+                message="Action Succeeded"
             )
         
         except ValueError as e:
@@ -47,5 +46,5 @@ class UsuarioController(BaseController):
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=self._handle_error(e, "Erro ao criar usuário")
+                detail=self._handle_error(e, "Erro ao listar usuários")
             )

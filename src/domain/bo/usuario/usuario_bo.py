@@ -1,9 +1,11 @@
+from typing import List
 import bcrypt
 from application.dto.usuario.request.novo_usuario_request import NovoUsuarioRequest
 from application.dto.usuario.response.novo_usuario_response import NovoUsuarioResponse
 from domain.enums.usuario.usuario_padrao_enum import UsuarioPadraoEnum
 from domain.models.usuario.usuario_model import UsuarioModel
 from infrastructure.dao.postgres.usuario.usuario_dao import UsuarioDAO
+from application.dto.usuario.response.listar_usuario_response import ListarUsuarioResponse, UsuarioDTO
 
 class UsuarioBO:
     def __init__(self):
@@ -38,3 +40,21 @@ class UsuarioBO:
         await self.usuario_dao.criar_novo_usuario(usuario_model, UsuarioPadraoEnum.ID.value)
 
         return NovoUsuarioResponse(email=request.email, nome=request.nome).to_dict()
+
+    async def listar_usuarios(self):
+        """Regra de negócio para criar novo usuário"""
+       
+        usuarios : List[UsuarioModel] = await self.usuario_dao.buscar_todos()
+        response = ListarUsuarioResponse(
+            usuarios = []
+        )
+        for usuario in usuarios:
+            response.usuarios.append(
+                UsuarioDTO(
+                    nome=usuario.nome,
+                    email=usuario.email,
+                    ativo=usuario.ativo
+                )
+            )
+
+        return response.to_dict()
