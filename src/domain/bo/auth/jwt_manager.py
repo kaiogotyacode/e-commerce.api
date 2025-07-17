@@ -1,6 +1,6 @@
 import jwt
 from datetime import datetime, timedelta
-from typing import Dict, Any
+from typing import Annotated, Dict, Any
 import os
 
 class JWTManager:

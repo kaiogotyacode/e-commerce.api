@@ -13,7 +13,7 @@ class TokenController(BaseController):
         try:
             resultado = await self.auth_bo.autenticar_usuario(request)
             return self._success_response(
-                data=resultado,
+                content=resultado,
                 message="Autenticação realizada com sucesso"
             )
         

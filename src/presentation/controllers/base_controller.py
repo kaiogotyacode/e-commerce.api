@@ -20,12 +20,12 @@ class BaseController(ABC):
             "message": str(error) if str(error) else default_message
         }
     
-    def _success_response(self, data: any = None, message: str = "Sucesso"):
+    def _success_response(self, content: any = None, message: str = "Sucesso"):
         """
         Método helper para respostas de sucesso padronizadas
         """
         return {
             "error": False,
             "message": message,
-            "data": data
+            "content": content
         }

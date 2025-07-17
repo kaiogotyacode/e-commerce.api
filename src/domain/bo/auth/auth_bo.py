@@ -23,10 +23,10 @@ class AuthBO:
         usuario : UsuarioModel = await self.auth_dao.buscar_por_email(request.email)
 
         if not usuario:
-            raise ValueError("Usuário não encontrado")
+            raise ValueError("Credenciais inválidas!")
 
         if not self._verify_password(request.senha, usuario.senha):
-            raise ValueError("Senha incorreta")
+            raise ValueError("Credenciais inválidas!")
         
         token = self.jwt_manager.generate_token(usuario.id_usuario)
 

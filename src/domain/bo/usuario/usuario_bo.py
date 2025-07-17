@@ -1,5 +1,6 @@
 import bcrypt
 from application.dto.usuario.request.novo_usuario_request import NovoUsuarioRequest
+from application.dto.usuario.response.novo_usuario_response import NovoUsuarioResponse
 from domain.enums.usuario.usuario_padrao_enum import UsuarioPadraoEnum
 from domain.models.usuario.usuario_model import UsuarioModel
 from infrastructure.dao.postgres.usuario.usuario_dao import UsuarioDAO
@@ -26,7 +27,6 @@ class UsuarioBO:
         if not request.email or "@" not in request.email:
             raise ValueError("Email inválido")
 
-        # Hash da senha antes de persistir
         request.senha = self._hash_password(request.senha)
 
         usuario_model = UsuarioModel(
@@ -37,4 +37,4 @@ class UsuarioBO:
 
         await self.usuario_dao.criar_novo_usuario(usuario_model, UsuarioPadraoEnum.ID.value)
 
-        return {"mensagem" : "Usuário criado com sucesso!"}
+        return NovoUsuarioResponse(email=request.email, nome=request.nome).to_dict()

@@ -15,7 +15,27 @@ class UsuarioController(BaseController):
         try:
             resultado = await self.usuario_bo.novo_usuario(request)
             return self._success_response(
-                data=resultado,
+                content=resultado,
+                message="Usuário criado com sucesso"
+            )
+        
+        except ValueError as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(e)
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=self._handle_error(e, "Erro ao criar usuário")
+            )
+
+    # Método não faz sentido para E-commerce. Apenas para testar Bearer Token Validation
+    async def listar_usuarios(self, request: NovoUsuarioRequest):
+        try:
+            resultado = await self.usuario_bo.novo_usuario(request)
+            return self._success_response(
+                content=resultado,
                 message="Usuário criado com sucesso"
             )
         
