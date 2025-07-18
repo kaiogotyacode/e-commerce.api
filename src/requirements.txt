@@ -2,5 +2,4 @@ fastapi
 uvicorn
 asyncpg
 bcrypt
-jwt
 PyJWT==2.8.0
