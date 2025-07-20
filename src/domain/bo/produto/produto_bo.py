@@ -3,7 +3,7 @@ import bcrypt
 from application.dto.produto.request.novo_produto_request import NovoProdutoRequest
 from application.dto.produto.response.novo_produto_response import NovoProdutoResponse
 from domain.models.produto.produto_model import ProdutoModel
-from infrastructure.dao.postgres.produto.usuario_dao import ProdutoDAO
+from infrastructure.dao.postgres.produto.produto_dao import ProdutoDAO
 
 
 class ProdutoBO:
