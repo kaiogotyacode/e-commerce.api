@@ -23,11 +23,12 @@ class ExibicaoProdutoDAO(BaseDAO):
     async def criar_vinculo_exibicao_produto(self, model: ExibicaoProdutoModel, id_usuario_logado: int) -> None:
         await self.criar(model, id_usuario_logado)
 
-    # async def retornar_vinculo_produto_exibicao(self):
-    #     query = f"""
-    #                 QUERY
-    #             """
+    async def validar_existencia_produto_exibicao(self, id_exibicao: int, id_produto: int):
+        query = f"""
+                    SELECT 1 FROM {self.table_name}
+                    WHERE id_exibicao = $1 AND id_produto = $2
+                """
 
-    #     params = (None,)
-    #     result = await self.execute_query(query, params)
-    #     return self.model_class(**result[0]) if result else None
+        params = (id_exibicao, id_produto,)
+        result = await self.execute_query(query, params)
+        return True if result else False
