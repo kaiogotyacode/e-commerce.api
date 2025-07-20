@@ -17,12 +17,3 @@ class UsuarioController(BaseController):
             content=resultado,
             message="Usuário criado com sucesso"
         )
-
-    # Método não faz sentido para E-commerce. Apenas para testar Bearer Token Validation
-    @handle_exceptions
-    async def listar_usuarios(self, token: str = Depends(validar_token_usuario)):
-        resultado = await self.usuario_bo.listar_usuarios()
-        return self._success_response(
-            content=resultado,
-            message="Action Succeeded"
-        )

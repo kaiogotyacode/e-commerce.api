@@ -3,6 +3,7 @@ from application.dto.auth.request.autenticar_usuario_request import AutenticarUs
 from domain.models.usuario.usuario_model import UsuarioModel
 from infrastructure.dao.postgres.auth.auth_dao import AuthDAO
 from domain.bo.auth.jwt_manager import JWTManager
+from domain.validators.email_validator import EmailValidator
 
 class AuthBO:
     def __init__(self):
@@ -20,16 +21,17 @@ class AuthBO:
         return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
     async def autenticar_usuario(self, request : AutenticarUsuarioRequest):
-        usuario : UsuarioModel = await self.auth_dao.buscar_por_email(request.email)
+        email_normalizado = EmailValidator.normalize_email(request.email)
+        
+        usuario : UsuarioModel = self.auth_dao.buscar_por_email(email_normalizado)
 
         if not usuario:
-            raise ValueError("Credenciais inválidas!")
+            raise ValueError("Usuário não encontrado ou credenciais inválidas!")
 
         if not self._verify_password(request.senha, usuario.senha):
-            raise ValueError("Credenciais inválidas!")
-        
-        token = self.jwt_manager.generate_token(usuario.id_usuario)
+            raise ValueError("Usuário não encontrado ou credenciais inválidas!")
 
-        return token
-
-        # Aqui você pode adicionar a lógica para gerar um token JWT, se necessário
+        if not usuario.ativo:
+            raise ValueError("Usuário inativo. Por favor, ative sua conta antes de tentar autenticar.")
+    
+        return self.jwt_manager.generate_token(usuario.id_usuario)

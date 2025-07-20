@@ -3,9 +3,12 @@ import bcrypt
 from application.dto.usuario.request.novo_usuario_request import NovoUsuarioRequest
 from application.dto.usuario.response.novo_usuario_response import NovoUsuarioResponse
 from domain.enums.usuario.usuario_padrao_enum import UsuarioPadraoEnum
+from domain.exceptions.bad_request_exception import BadRequestException
+from domain.exceptions.conflict_exception import ConflictException
 from domain.models.usuario.usuario_model import UsuarioModel
 from infrastructure.dao.postgres.usuario.usuario_dao import UsuarioDAO
 from application.dto.usuario.response.listar_usuario_response import ListarUsuarioResponse, UsuarioDTO
+from domain.validators.email_validator import EmailValidator
 
 class UsuarioBO:
     def __init__(self):
@@ -23,38 +26,29 @@ class UsuarioBO:
 
     async def novo_usuario(self, request : NovoUsuarioRequest):
         """Regra de negócio para criar novo usuário"""
-        if not request.senha or len(request.senha) < 6:
-            raise ValueError("Senha deve ter pelo menos 6 caracteres")
+        if not request.senha or len(request.senha) < 8:
+            raise BadRequestException("Senha deve ter pelo menos 8 caracteres")
         
-        if not request.email or "@" not in request.email:
-            raise ValueError("Email inválido")
+        email_valido, email_resultado = EmailValidator.validate_email_comprehensive(request.email)
+        if not email_valido:
+            raise BadRequestException(email_resultado)
+
+        if request.senha != request.confirmar_senha:
+            raise BadRequestException("Senhas não coincidem")
+        
+        usuario : UsuarioModel = await self.usuario_dao.buscar_por_email(email_resultado)
+
+        if usuario:
+            raise ConflictException("Email já cadastrado")
 
         request.senha = self._hash_password(request.senha)
 
         usuario_model = UsuarioModel(
             nome = request.nome,
-            email = request.email,
+            email = email_resultado,
             senha = request.senha
         )
 
         await self.usuario_dao.criar_novo_usuario(usuario_model, UsuarioPadraoEnum.ID.value)
 
-        return NovoUsuarioResponse(email=request.email, nome=request.nome).to_dict()
-
-    async def listar_usuarios(self):
-        """Regra de negócio para criar novo usuário"""
-       
-        usuarios : List[UsuarioModel] = await self.usuario_dao.buscar_todos()
-        response = ListarUsuarioResponse(
-            usuarios = []
-        )
-        for usuario in usuarios:
-            response.usuarios.append(
-                UsuarioDTO(
-                    nome=usuario.nome,
-                    email=usuario.email,
-                    ativo=usuario.ativo
-                )
-            )
-
-        return response.to_dict()
+        return NovoUsuarioResponse(email=email_resultado, nome=request.nome).to_dict()

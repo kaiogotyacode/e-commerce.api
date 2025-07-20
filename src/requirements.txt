@@ -3,3 +3,4 @@ uvicorn
 asyncpg
 bcrypt
 PyJWT==2.8.0
+email-validator

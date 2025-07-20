@@ -21,10 +21,3 @@ async def criar_novo_usuario(request: NovoUsuarioRequest):
     - **senha**: Senha do usuário
     """
     return await usuario_controller.criar_usuario(request)
-
-@router.post("/listar_usuarios", dependencies=[Depends(validar_token_usuario)], response_model=None)
-async def listar_usuarios():
-    """
-    Listar todos os usuários do sistema.
-    """
-    return await usuario_controller.listar_usuarios()
