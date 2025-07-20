@@ -4,13 +4,11 @@ from domain.dependencies.usuario_bearer_token_dependency import validar_token_us
 from presentation.controllers.usuario_controller import UsuarioController
 from application.dto.usuario.request.novo_usuario_request import NovoUsuarioRequest
 
-# Criar o router com prefixo e tags
 router = APIRouter(
     prefix="/usuario",
-    tags=["Usuários"]  # Isso vai agrupar os endpoints na documentação
+    tags=["Usuários"]
 )
 
-# Instanciar o controller
 usuario_controller = UsuarioController()
 
 @router.post("/novo_usuario", response_model=None)
