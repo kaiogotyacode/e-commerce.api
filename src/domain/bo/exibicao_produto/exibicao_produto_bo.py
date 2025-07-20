@@ -3,18 +3,25 @@ import bcrypt
 from application.dto.exibicao.request.vincular_produto_exibicao_request import VincularProdutoExibicaoRequest
 from application.dto.produto.request.novo_produto_request import NovoProdutoRequest
 from application.dto.produto.response.novo_produto_response import NovoProdutoResponse
+from domain.exceptions.unauthorized_exception import UnauthorizedException
 from domain.models.exibicao.exibicao_produto_model import ExibicaoProdutoModel
 from domain.models.produto.produto_model import ProdutoModel
+from domain.models.usuario.usuario_model import UsuarioModel
 from infrastructure.dao.postgres.exibicao.exibicao_produto_dao import ExibicaoProdutoDAO
+from infrastructure.dao.postgres.usuario.usuario_dao import UsuarioDAO
 
 
 class ExibicaoProdutoBO:
     def __init__(self):
         self.exibicao_produto_dao = ExibicaoProdutoDAO()
-
+        self.usuario_dao = UsuarioDAO()
+        
     async def vincular_produto_exibicao(self, request : VincularProdutoExibicaoRequest, id_usuario_logado : int):
-        #TODO: Validações idProduto | idExibição | or isAdmin
-
+        usuario_logado : UsuarioModel = await self.usuario_dao.buscar_por_id(id_usuario_logado)
+        
+        if not usuario_logado.admin:
+            raise UnauthorizedException("Usuário não autorizado.")
+        
         exibicao_produto_model = ExibicaoProdutoModel(
             id_exibicao=request.id_exibicao,
             id_produto=request.id_produto,
