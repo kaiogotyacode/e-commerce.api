@@ -1,5 +1,4 @@
-![image](https://github.com/user-attachments/assets/c706530f-7af1-4b4b-a01d-d9b6f42ebdff)
-
+<img width="1514" height="873" alt="image" src="https://github.com/user-attachments/assets/b3a2dd4f-6f53-4650-9411-90df68de9195" />
 
 Deployment using Render Platform ✅
 
