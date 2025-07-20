@@ -1,5 +1,4 @@
-from application.dto.exibicao.response.retornar_vinculo_produto_exibicao_dto import RetornarVinculoProdutoExibicaoResponse, VinculoProdutoExibicao
-from domain.models.exibicao.exibicao_produto_model import ExibicaoProdutoModel
+from domain.models.exibicao_produto.exibicao_produto_model import ExibicaoProdutoModel
 from infrastructure.dao.postgres.common.base_dao import BaseDAO
 
 class ExibicaoProdutoDAO(BaseDAO):
@@ -11,10 +10,6 @@ class ExibicaoProdutoDAO(BaseDAO):
     @property
     def model_class(self):
         return ExibicaoProdutoModel
-
-    @property
-    def vinc_prod_exib(self):
-        return RetornarVinculoProdutoExibicaoResponse
 
     @property
     def primary_key_field(self) -> str:

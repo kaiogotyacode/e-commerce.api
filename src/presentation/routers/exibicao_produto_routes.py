@@ -1,6 +1,6 @@
 # src/presentation/routers/usuario_routes.py
 from fastapi import APIRouter, Depends
-from application.dto.exibicao.request.vincular_produto_exibicao_request import VincularProdutoExibicaoRequest
+from application.dto.exibicao_produto.request.vincular_produto_exibicao_request import VincularProdutoExibicaoRequest
 from domain.dependencies.usuario_bearer_token_dependency import validar_token_usuario
 from presentation.controllers.exibicao_produto_controller import ExibicaoProdutoController
 

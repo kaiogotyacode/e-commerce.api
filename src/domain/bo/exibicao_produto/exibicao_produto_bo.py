@@ -1,14 +1,12 @@
-from typing import List
-import bcrypt
-from application.dto.exibicao.request.vincular_produto_exibicao_request import VincularProdutoExibicaoRequest
+from application.dto.exibicao_produto.request.vincular_produto_exibicao_request import VincularProdutoExibicaoRequest
 from application.dto.produto.request.novo_produto_request import NovoProdutoRequest
 from application.dto.produto.response.novo_produto_response import NovoProdutoResponse
 from domain.exceptions.conflict_exception import ConflictException
 from domain.exceptions.unauthorized_exception import UnauthorizedException
-from domain.models.exibicao.exibicao_produto_model import ExibicaoProdutoModel
+from domain.models.exibicao_produto.exibicao_produto_model import ExibicaoProdutoModel
 from domain.models.produto.produto_model import ProdutoModel
 from domain.models.usuario.usuario_model import UsuarioModel
-from infrastructure.dao.postgres.exibicao.exibicao_produto_dao import ExibicaoProdutoDAO
+from infrastructure.dao.postgres.exibicao_produto.exibicao_produto_dao import ExibicaoProdutoDAO
 from infrastructure.dao.postgres.usuario.usuario_dao import UsuarioDAO
 
 

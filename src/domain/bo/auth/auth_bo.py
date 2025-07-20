@@ -23,7 +23,7 @@ class AuthBO:
     async def autenticar_usuario(self, request : AutenticarUsuarioRequest):
         email_normalizado = EmailValidator.normalize_email(request.email)
         
-        usuario : UsuarioModel = self.auth_dao.buscar_por_email(email_normalizado)
+        usuario : UsuarioModel = await self.auth_dao.buscar_por_email(email_normalizado)
 
         if not usuario:
             raise ValueError("Usuário não encontrado ou credenciais inválidas!")

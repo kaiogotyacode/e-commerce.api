@@ -1,5 +1,5 @@
-from fastapi import Depends, HTTPException, status
-from application.dto.exibicao.request.vincular_produto_exibicao_request import VincularProdutoExibicaoRequest
+from fastapi import Depends
+from application.dto.exibicao_produto.request.vincular_produto_exibicao_request import VincularProdutoExibicaoRequest
 from domain.bo.exibicao_produto.exibicao_produto_bo import ExibicaoProdutoBO
 from presentation.controllers.base_controller import BaseController, handle_exceptions
 from domain.dependencies.usuario_bearer_token_dependency import validar_token_usuario

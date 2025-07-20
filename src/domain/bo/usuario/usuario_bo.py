@@ -7,7 +7,6 @@ from domain.exceptions.bad_request_exception import BadRequestException
 from domain.exceptions.conflict_exception import ConflictException
 from domain.models.usuario.usuario_model import UsuarioModel
 from infrastructure.dao.postgres.usuario.usuario_dao import UsuarioDAO
-from application.dto.usuario.response.listar_usuario_response import ListarUsuarioResponse, UsuarioDTO
 from domain.validators.email_validator import EmailValidator
 
 class UsuarioBO:
