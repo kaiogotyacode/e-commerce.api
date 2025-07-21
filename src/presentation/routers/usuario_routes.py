@@ -1,6 +1,5 @@
 # src/presentation/routers/usuario_routes.py
-from fastapi import APIRouter, Depends
-from domain.dependencies.usuario_bearer_token_dependency import validar_token_usuario
+from fastapi import APIRouter
 from presentation.controllers.usuario_controller import UsuarioController
 from application.dto.usuario.request.novo_usuario_request import NovoUsuarioRequest
 
@@ -19,5 +18,6 @@ async def criar_novo_usuario(request: NovoUsuarioRequest):
     - **nome**: Nome completo do usuário
     - **email**: Email válido e único
     - **senha**: Senha do usuário
+    - **confirmar_senha**: Confirmação da senha do usuário
     """
     return await usuario_controller.criar_usuario(request)

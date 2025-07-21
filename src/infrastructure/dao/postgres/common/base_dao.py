@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional, Any, Dict
 import asyncpg
-from dataclasses import dataclass, fields
+from dataclasses import fields
+import os
 
 class BaseDAO(ABC):
     """
@@ -9,7 +10,7 @@ class BaseDAO(ABC):
     """
     
     def __init__(self):
-        self.dsn = "postgresql://neondb_owner:npg_Xpi4jSxqdM3R@ep-ancient-glade-a87hrwfe-pooler.eastus2.azure.neon.tech/neondb?sslmode=require&channel_binding=require"
+        self.dsn = os.getenv('DATABASE_URL', None)
     
     @property
     @abstractmethod

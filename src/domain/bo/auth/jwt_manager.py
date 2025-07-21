@@ -5,9 +5,9 @@ import os
 
 class JWTManager:
     def __init__(self):
-        self.secret_key = os.getenv('JWT_SECRET_KEY', 'Ec0MDoj4pA$3g!7tWz9R&f#LuKmQ2pSxN')
-        self.algorithm = 'HS256'
-        self.expiration_hours = 24
+        self.secret_key = os.getenv('JWT_SECRET_KEY', 'ChaveAleatoria-E-commerce$u7#Xf!9wVz@3LpTgQm2')
+        self.algorithm = os.getenv('JWT_ALGORITHM')
+        self.expiration_hours = int(os.getenv('JWT_EXPIRATION_HOURS'))
 
     def generate_token(self, user_id: int) -> str:
         """Gera um token JWT para o usuário"""

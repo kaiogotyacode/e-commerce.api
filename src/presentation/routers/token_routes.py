@@ -11,4 +11,10 @@ token_controller = TokenController()
 
 @router.post("/autenticar_usuario", response_model=None)
 async def autenticar_usuario(request: AutenticarUsuarioRequest):
+    """
+    Autentica um usuário e gera um token JWT.
+
+    - **email**: Email do usuário
+    - **senha**: Senha do usuário
+    """
     return await token_controller.autenticar_usuario(request)

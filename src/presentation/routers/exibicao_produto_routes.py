@@ -15,5 +15,9 @@ exibicao_produto_controller = ExibicaoProdutoController()
 async def vincular_produto_exibicao(request: VincularProdutoExibicaoRequest, id_usuario_logado: int = Depends(validar_token_usuario)):
     """
     Vincular um produto a uma exibição.
+
+    - **id_produto**: ID do produto a ser vinculado
+    - **id_exibicao**: ID da exibição onde o produto será vinculado
+    - **order_list**: Ordem de exibição do produto na exibição
     """
     return await exibicao_produto_controller.vincular_produto_exibicao(request, id_usuario_logado)
