@@ -10,7 +10,7 @@
             },
             "module": "uvicorn",
             "args": [
-                "src.main:app",
+                "main:app",
                 "--reload"
             ],
             "jinja": false, 
