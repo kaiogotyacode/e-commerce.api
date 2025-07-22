@@ -23,3 +23,7 @@ class ProdutoDAO(BaseDAO):
     async def buscar_por_id(self, id_produto: int) -> Optional[ProdutoModel]:
         produto = await self.buscar_por_filtro(id_produto=id_produto)
         return produto[0] if produto else None
+    
+    # async def buscar_por_id(self, id_produto: int) -> Optional[ProdutoModel]:
+    #     produto = await self.buscar_por_filtro(id_produto=id_produto)
+    #     return produto[0] if produto else None

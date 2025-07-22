@@ -39,3 +39,31 @@ class ProdutoBO:
             valor_unitario=request.valor_unitario,
             img_url=request.img_url
         ).to_dict()
+
+    async def listar_produtos_por_tela(self, request: ListarProdutosTelaRequest) -> ListarProdutosTelaResponse:
+        # Se a tela for Home:
+
+            # Exibicao: { exibicao_1st | exibicao_2nd } 
+            # Banner: {
+            # Carrousel: { carrousel_1st },
+            # BannerDefault: { banner_1st, banner_2nd },
+            # FullWidth: { full_width_1st }
+            # }
+         
+        #  produtos = await self.produto_dao.listar_produtos_por_tela(request)
+
+        # validações
+
+        pass
+
+    async def listar_produtos_home(self):
+        pass
+
+    async def listar_produtos_lancamentos(self):
+        pass
+
+    async def exibir_produto_detalhe(self):
+        # Definir padrão visual da tela de Detalhe do Produto
+        # Nos campos de Exibição e Banner, as imagens devem estar relacionadas ao TIPO DO PRODUTO (add nova propriedade).
+        pass
+    

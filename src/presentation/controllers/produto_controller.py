@@ -39,3 +39,11 @@ class ProdutoController(BaseController):
             content=None,
                 message="Produto vinculado com sucesso"
             )
+
+    @handle_exceptions
+    async def listar_produtos_por_tela(self, request: ListarProdutosTelaRequest):
+        produtos = await self.produto_bo.listar_produtos_por_tela(request)
+        return self._success_response(
+            content=produtos,
+            message="Produtos listados com sucesso"
+        )
